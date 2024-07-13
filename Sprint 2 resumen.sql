@@ -30,7 +30,18 @@ WHERE id IN (
     )
 );   
 
-SELECT id, company_name FROM company WHERE id IN (SELECT company_id FROM transaction WHERE NOT id); 
+SELECT c.company_name 
+FROM company c 
+WHERE c.id NOT IN (
+	SELECT t.company_id 
+    FROM transaction t);
+    
+#testeo
+SELECT c.company_name, count(t.id)
+FROM company c 
+JOIN transaction t ON c.id = t.company_id
+GROUP BY c.company_name
+ORDER BY count(t.id);
 
 
 #Nivell 2
