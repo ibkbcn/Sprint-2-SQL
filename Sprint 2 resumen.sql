@@ -56,6 +56,10 @@ ORDER BY count(t.id);
 #Nivell 2
 
 #Ejercicio 1
+
+#Esta query busca reconocer los cinco días con más ventas. 
+#(Al no disponer de columna fecha he aplicado la función DATE sobre timestamp(fecha-hora), lo que lo convierte en fecha dentro de la query.
+#Posteriormente agrupo por esta misma columna, ordeno por la suma total de amount en orden DESC y limito a cinco outputs con LIMIT 5.
 SELECT DATE(timestamp), SUM(amount)
 FROM transaction
 WHERE declined = 0
@@ -64,7 +68,10 @@ ORDER BY sum(amount) DESC
 LIMIT 5;   
 #funcion DATE
 
-#Ejercicio 2
+
+#Ejercicio 2  
+
+#En esta query agrupo país con su promedio de amount y ordenado por amount en orden descendiente. El objetivo es destacar los países con importes superiores.
 SELECT company.country, avg(amount) FROM company JOIN transaction ON company.id = transaction.company_id 
 WHERE declined = 0
 GROUP BY company.country
@@ -72,7 +79,9 @@ ORDER BY avg(amount) DESC;
 
 #Ejercicio 3
 
-# Mostra el llistat aplicant JOIN i subconsultes. (SelfJoin)
+# Mostra el llistat aplicant JOIN i subconsultes. 
+#La query retorna las transacciones de las empresas que comparten país con ‘Non Institute’.
+# Se utiliza una subquery basada en WHERE para conectar ambas tablas y abajo se realiza un Self Join (c1 y c2) para comprobar que el país coincide con el país de la empresa.
 
 SELECT t.id
 FROM transaction t
@@ -85,7 +94,10 @@ AND c2.company_name = 'Non Institute');
 
 
 # Mostra el llistat aplicant solament subconsultes.
-
+#Repito la operación anteriormente realizada, pero ahora sin utilizar JOIN's.
+# Empezando por abajo, la primera query retorna el país al que pertenece ‘Non Institute’. 
+# A continuación lo conectamos con la clave primaria ‘id’ de la tabla Company, para finalmente poderlo conectar con la clave foránea de la tabla transaction ‘company_id’,
+# y seleccionar el id de transaction que ha pasado por los filtros anteriormente realizados.
 SELECT id
 FROM transaction
 WHERE company_id IN(
@@ -101,6 +113,9 @@ WHERE company_id IN(
 
 # Nivell 3
 
+# En esta query quiero obtener detalles de venta de las empresas. 
+# Filtrando por aquellas que su amount se encuentra entre 100 y 200 usando ‘BETWEEN” y que además tengan transacciones en alguna de las 3 fechas escritas en el WHERE.
+ 
 # Ejercicio 1 
 SELECT c.company_name, c.phone,c.country,DATE(t.timestamp),t.amount
 FROM company c
@@ -109,7 +124,10 @@ ON c.id = t.company_id
 WHERE t.amount BETWEEN 100 AND 200  AND  DATE(t.timestamp) IN ('2021-04-29','2021-07-20','2022-03-13')
 ORDER BY t.amount DESC;
 
-#Ejercicio 2  cantidad transacciones por empresa y si tienen más de 4 o menos
+#Ejercicio 2  
+# Cantidad transacciones por empresa y si tienen más de 4 o menos
+#Uso de CASE para crear una columna con varias categorías, dependiendo en este caso de cuantas transacciones(t.id) tiene una misma empresa.
+
 SELECT c.company_name, count(t.id) AS transaction_count, 
 CASE WHEN count(t.id) > 4  THEN 'more than 4'
 ELSE 'is 4 or lower'
