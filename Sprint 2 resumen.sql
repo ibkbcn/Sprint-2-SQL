@@ -89,8 +89,8 @@ WHERE t.company_id IN
 (SELECT c1.id 
 FROM company c1
 JOIN company c2
-WHERE c1.country = c2.country
-AND c2.company_name = 'Non Institute');
+ON c1.country = c2.country
+WHERE c2.company_name = 'Non Institute');
 
 
 # Mostra el llistat aplicant solament subconsultes.
